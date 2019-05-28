@@ -1,0 +1,10 @@
+*.o
+*.a
+*.so
+*.gcda
+*.gcno
+*.obj
+build*
+RunResults.txt
+.*project
+.settings/*
