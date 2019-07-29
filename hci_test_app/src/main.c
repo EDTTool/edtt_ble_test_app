@@ -28,6 +28,7 @@
 
 static u16_t      waiting_opcode;
 static commands_t waiting_response;
+static u8_t       m_events;
 
 /**
  * @brief Clean out excess bytes from the input buffer...
@@ -153,7 +154,7 @@ static void echo(u16_t size)
     }
 }
 
-NET_BUF_POOL_DEFINE(event_pool, CONFIG_BT_HCI_CMD_COUNT + 8, BT_BUF_RX_SIZE + 4, BT_BUF_USER_DATA_MIN, NULL);
+NET_BUF_POOL_DEFINE(event_pool, 32, BT_BUF_RX_SIZE + 4, BT_BUF_USER_DATA_MIN, NULL);
 static K_FIFO_DEFINE(event_queue);
 static K_FIFO_DEFINE(rx_queue);
 NET_BUF_POOL_DEFINE(data_pool, CONFIG_BT_CTLR_RX_BUFFERS + 14, BT_BUF_ACL_SIZE + 4, BT_BUF_USER_DATA_MIN, NULL);
@@ -198,6 +199,34 @@ static void command_status(struct net_buf *buf)
 }
 
 /**
+ * @brief Remove an event from the event queue
+ */
+static void discard_event()
+{
+    struct net_buf *buf = net_buf_get(&event_queue, K_FOREVER);
+
+    net_buf_unref(buf);
+    m_events--;
+}
+
+/**
+ * @brief Allocate and store an event in the event queue
+ */
+static struct net_buf *queue_event(struct net_buf *buf)
+{
+    struct net_buf *evt;
+
+    if ((evt = net_buf_alloc(&event_pool, K_NO_WAIT))) {
+        bt_buf_set_type(evt, BT_BUF_EVT);
+        net_buf_add_le32(evt, sys_cpu_to_le32(k_uptime_get()));
+        net_buf_add_mem(evt, buf->data, buf->len);
+        net_buf_put(&event_queue, evt);
+        m_events++;
+    }
+    return evt;
+}
+
+/**
  * @brief Thread to service events and ACL data packets from the HCI input queue
  */
 static void service_events(void *p1, void *p2, void *p3)
@@ -208,11 +237,8 @@ static void service_events(void *p1, void *p2, void *p3)
         buf = net_buf_get(&rx_queue, K_FOREVER);
         if (BT_BUF_EVT == bt_buf_get_type(buf)) {
 
-            if ((evt = net_buf_alloc(&event_pool, K_NO_WAIT))) {
-                bt_buf_set_type(evt, BT_BUF_EVT);
-                net_buf_add_le32(evt, sys_cpu_to_le32(k_uptime_get()));
-                net_buf_add_mem(evt, buf->data, buf->len);
-                net_buf_put(&event_queue, evt);
+            if (!(evt = queue_event(buf))) {
+                bs_trace_raw_time(4, "Failed to allocated buffer for event!\n");
             }
 
             struct bt_hci_evt_hdr *hdr = (void *)buf->data;
@@ -220,9 +246,17 @@ static void service_events(void *p1, void *p2, void *p3)
 
             switch (hdr->evt) {
                 case BT_HCI_EVT_CMD_COMPLETE:
+                     if (!evt) {
+                         discard_event();
+                         evt = queue_event(buf);
+                     }
                      command_complete(buf);
                      break;
                 case BT_HCI_EVT_CMD_STATUS:
+                     if (!evt) {
+                         discard_event();
+                         evt = queue_event(buf);
+                     }
                      command_status(buf);
                      break;
                 default:
@@ -255,6 +289,7 @@ static void flush_events(u16_t size)
 
     while ((buf = net_buf_get(&event_queue, K_NO_WAIT))) {
         net_buf_unref(buf);
+        m_events--;
     }
     read_excess_bytes(size);
     size = 0;
@@ -280,9 +315,34 @@ static void get_event(u16_t size)
         edtt_write((u8_t *)&size, sizeof(size), EDTTT_BLOCK);
         edtt_write((u8_t *)buf->data, buf->len, EDTTT_BLOCK);
         net_buf_unref(buf);
+        m_events--;
     }
     else {
         edtt_write((u8_t *)&size, sizeof(size), EDTTT_BLOCK);
+    }
+}
+
+/**
+ * @brief Get next available HCI events from the input-copy queue
+ */
+static void get_events(u16_t size)
+{
+    u16_t  response = sys_cpu_to_le16(CMD_GET_EVENT_RSP);
+    struct net_buf *buf;
+    u8_t   count = m_events;
+
+    read_excess_bytes(size);
+    size = 0;
+
+    edtt_write((u8_t *)&response, sizeof(response), EDTTT_BLOCK);
+    edtt_write((u8_t *)&count, sizeof(count), EDTTT_BLOCK);
+    while (count--) {
+        buf = net_buf_get(&event_queue, K_FOREVER);
+        size = sys_cpu_to_le16(buf->len);
+        edtt_write((u8_t *)&size, sizeof(size), EDTTT_BLOCK);
+        edtt_write((u8_t *)buf->data, buf->len, EDTTT_BLOCK);
+        net_buf_unref(buf);
+        m_events--;
     }
 }
 
@@ -294,15 +354,12 @@ static void has_event(u16_t size)
     struct has_event_resp {
         u16_t response;
         u16_t size;
-        u8_t  empty;
+        u8_t  count;
     } __packed;
-    struct has_event_resp le_response = { sys_cpu_to_le16(CMD_HAS_EVENT_RSP), sys_cpu_to_le16(1), 0 };
+    struct has_event_resp le_response = { sys_cpu_to_le16(CMD_HAS_EVENT_RSP), sys_cpu_to_le16(1), m_events };
 
     if (size > 0) {
         read_excess_bytes(size);
-    }
-    if (k_fifo_is_empty(&event_queue)) {
-        le_response.empty = 1;
     }
     edtt_write((u8_t *)&le_response, sizeof(le_response), EDTTT_BLOCK);
 }
@@ -430,6 +487,7 @@ void main(void)
      */
     waiting_opcode = 0;
     waiting_response = CMD_NOTHING;
+    m_events = 0;
     /**
      * Initialize Bluetooth stack in raw mode...
      */
@@ -461,8 +519,8 @@ void main(void)
         command = sys_le16_to_cpu(command);
         edtt_read((u8_t *)&size, sizeof(size), EDTTT_BLOCK);
         size = sys_le16_to_cpu(size);
-        bs_trace_raw_time(4, "command 0x%04X received (size %u)\n",
-                          command, size);
+        bs_trace_raw_time(4, "command 0x%04X received (size %u) events=%u\n",
+                          command, size, m_events);
 
         switch (command) {
             case CMD_ECHO_REQ:
@@ -475,7 +533,14 @@ void main(void)
                  has_event(size);
                  break;
             case CMD_GET_EVENT_REQ:
-                 get_event(size);
+                 {
+                     u8_t multiple;
+                     edtt_read((u8_t *)&multiple, sizeof(multiple), EDTTT_BLOCK);
+                     if (multiple)
+                         get_events(--size);
+                     else
+                         get_event(--size);
+                 }
                  break;
             case CMD_LE_FLUSH_DATA_REQ:
                  le_flush_data(size);
