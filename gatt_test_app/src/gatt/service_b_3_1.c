@@ -27,7 +27,9 @@
 #define BT_UUID_VALUE_V6                BT_UUID_DECLARE_16(0xb006)
 
 static u8_t   value_v6_value = 0x06;
+/*
 static struct bt_gatt_ccc_cfg value_v6_ccc_cfg[BT_GATT_CCC_MAX] = {};
+*/
 static bool   value_v6_ntf_active = false;
 
 /**

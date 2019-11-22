@@ -61,7 +61,7 @@ static void disconnected(struct bt_conn *conn, u8_t reason)
 	printk("Disconnected (reason %u)\n", reason);
 }
 
-static void security_changed(struct bt_conn *conn, bt_security_t level)
+static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err)
 {
 	char addr[BT_ADDR_LE_STR_LEN];
 

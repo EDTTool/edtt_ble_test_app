@@ -135,6 +135,41 @@ extern "C" {
 #define BT_GATT_DESCRIPTOR(_uuid, _perm, _read, _write, _value, _handle) \
     BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value, _handle)
 
+/** @def BT_GATT_MANAGED
+ *  @brief Managed Client Characteristic Configuration Declaration Macro.
+ *
+ *  Helper macro to declare a Managed CCC attribute.
+ *
+ *  @param _ccc    CCC attribute user data, shall point to a _bt_gatt_ccc.
+ *  @param _perm   CCC access permissions.
+ *  @param _handle Descriptor attribute handle.
+ */ 
+#undef  BT_GATT_MANAGED
+#define BT_GATT_MANAGED(_ccc, _perm, _handle) \
+    BT_GATT_ATTRIBUTE(BT_UUID_GATT_CCC, _perm, bt_gatt_attr_read_ccc, bt_gatt_attr_write_ccc, _ccc, _handle)
+
+/** @def BT_GATT_CCC
+ *  @brief Client Characteristic Configuration Change Declaration Macro.
+ *
+ *  Helper macro to declare a CCC attribute.
+ *
+ *  @param _cfg         Initial configuration.
+ *  @param _cfg_changed Configuration changed callback.
+ *  @param _handle      Descriptor attribute handle.
+ */
+/* #undef  BT_GATT_CCC
+   #define BT_GATT_CCC(_cfg, _cfg_changed, _handle) \
+      BT_GATT_DESCRIPTOR(BT_UUID_GATT_CCC, \
+          BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, \
+          bt_gatt_attr_read_ccc, \
+          bt_gatt_attr_write_ccc, \
+          (&(struct _bt_gatt_ccc) { \
+              .cfg = _cfg, \
+              .cfg_len = ARRAY_SIZE(_cfg), \
+              .cfg_changed = _cfg_changed \
+          } ), \
+          _handle)
+*/
 /** @def BT_GATT_CCC
  *  @brief Client Characteristic Configuration Change Declaration Macro.
  *
@@ -146,16 +181,8 @@ extern "C" {
  */
 #undef  BT_GATT_CCC
 #define BT_GATT_CCC(_cfg, _cfg_changed, _handle) \
-    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CCC, \
-        BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, \
-        bt_gatt_attr_read_ccc, \
-        bt_gatt_attr_write_ccc, \
-        (&(struct _bt_gatt_ccc) { \
-            .cfg = _cfg, \
-            .cfg_len = ARRAY_SIZE(_cfg), \
-            .cfg_changed = _cfg_changed \
-        } ), \
-        _handle)
+    BT_GATT_MANAGED((&(struct _bt_gatt_ccc) \
+        BT_GATT_CCC_INITIALIZER(_cfg_changed, NULL, NULL)), BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, _handle)
 
 /** @def BT_GATT_CEP
  *  @brief Characteristic Extended Properties Declaration Macro.

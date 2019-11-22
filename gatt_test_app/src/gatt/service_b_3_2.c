@@ -28,7 +28,9 @@
 
 static u8_t   value_v6_value = 0x06;
 static struct bt_gatt_indicate_params ind_params;
+/*
 static struct bt_gatt_ccc_cfg value_v6_ccc_cfg[BT_GATT_CCC_MAX] = {};
+*/
 static bool   value_v6_ntf_active = false;
 static bool   value_v6_ind_active = false;
 
