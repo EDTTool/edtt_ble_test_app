@@ -6,11 +6,12 @@
 /**
  * @brief Service D
  *
- *  This code is auto-generated from the Excel Workbook 'GATT_Test_Databases.xlsm' Sheet: 'Large Database 2'
+ *  This code is auto-generated from the Excel Workbook
+ *  'GATT_Test_Databases.xlsm' Sheet: 'Large Database 2'
  */
 
-#include <misc/byteorder.h>
-#include <misc/printk.h>
+#include <sys/byteorder.h>
+#include <sys/printk.h>
 
 #include <bluetooth/gatt.h>
 
@@ -26,7 +27,9 @@ extern struct bt_gatt_attr service_b_1_2_attrs[];
 /** @def BT_UUID_VALUE_V11__128_BIT_UUID
  *  @brief UUID for the Value V11 (128-bit UUID) Characteristic
  */
-#define BT_UUID_VALUE_V11__128_BIT_UUID BT_UUID_DECLARE_128(0xef, 0xcd, 0xab, 0x89, 0x67, 0x45, 0x23, 0x01, 0x00, 0x00, 0x00, 0x00, 0x0b, 0xb0, 0x00, 0x00)
+#define BT_UUID_VALUE_V11__128_BIT_UUID \
+	BT_UUID_DECLARE_128(0xef, 0xcd, 0xab, 0x89, 0x67, 0x45, 0x23, 0x01, \
+			    0x00, 0x00, 0x00, 0x00, 0x0b, 0xb0, 0x00, 0x00)
 
 /** @def BT_UUID_VALUE_V12
  *  @brief UUID for the Value V12 Characteristic
@@ -45,13 +48,17 @@ static u8_t   value_v12_value = 0x0C;
  * @param len    Length of data to read
  * @param offset Offset to start reading from
  *
- * @return       Number of bytes read, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes read, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t read_value_v11__128_bit_uuid(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
+static ssize_t read_value_v11__128_bit_uuid(struct bt_conn *conn,
+					    const struct bt_gatt_attr *attr,
+					    void *buf, u16_t len, u16_t offset)
 {
-    const u8_t *value = attr->user_data;
+	const u8_t *value = attr->user_data;
 
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value_v11__128_bit_uuid_value));
+	return bt_gatt_attr_read(conn, attr, buf, len, offset, value,
+				 sizeof(value_v11__128_bit_uuid_value));
 }
 
 /**
@@ -63,38 +70,44 @@ static ssize_t read_value_v11__128_bit_uuid(struct bt_conn *conn, const struct b
  * @param len    Length of data to read
  * @param offset Offset to start reading from
  *
- * @return       Number of bytes read, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes read, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t read_value_v12(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
+static ssize_t read_value_v12(struct bt_conn *conn,
+			      const struct bt_gatt_attr *attr, void *buf,
+			      u16_t len, u16_t offset)
 {
-    const u8_t *value = attr->user_data;
+	const u8_t *value = attr->user_data;
 
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value_v12_value));
+	return bt_gatt_attr_read(conn, attr, buf, len, offset, value,
+				 sizeof(value_v12_value));
 }
 
 #define BT_GATT_CHRC_NONE 0
 
 struct bt_gatt_attr service_d_2_attrs[] = {
-    BT_GATT_SECONDARY_SERVICE(BT_UUID_SERVICE_D, 0x40),
-    BT_GATT_INCLUDE_SERVICE(service_b_1_2_attrs, 0x41),
-    BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V11__128_BIT_UUID,
-        BT_GATT_CHRC_READ,
-        BT_GATT_PERM_READ,
-        read_value_v11__128_bit_uuid, NULL, &value_v11__128_bit_uuid_value, 0x42),
-    BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V12,
-        BT_GATT_CHRC_READ,
-        BT_GATT_PERM_READ,
-        read_value_v12, NULL, &value_v12_value, 0x44)
+	BT_GATT_SECONDARY_SERVICE(BT_UUID_SERVICE_D, 0x40),
+	BT_GATT_INCLUDE_SERVICE(service_b_1_2_attrs, 0x41),
+	BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V11__128_BIT_UUID,
+		BT_GATT_CHRC_READ,
+		BT_GATT_PERM_READ,
+		read_value_v11__128_bit_uuid, NULL,
+		&value_v11__128_bit_uuid_value, 0x42),
+	BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V12,
+		BT_GATT_CHRC_READ,
+		BT_GATT_PERM_READ,
+		read_value_v12, NULL, &value_v12_value, 0x44)
 };
 
-static struct bt_gatt_service service_d_2_svc = BT_GATT_SERVICE(service_d_2_attrs);
+static struct bt_gatt_service service_d_2_svc =
+			BT_GATT_SERVICE(service_d_2_attrs);
 
 /**
  * @brief Register the Service D and all its Characteristics...
  */
 void service_d_2_init(void)
 {
-    bt_gatt_service_register(&service_d_2_svc);
+	bt_gatt_service_register(&service_d_2_svc);
 }
 
 /**
@@ -102,5 +115,5 @@ void service_d_2_init(void)
  */
 void service_d_2_remove(void)
 {
-    bt_gatt_service_unregister(&service_d_2_svc);
+	bt_gatt_service_unregister(&service_d_2_svc);
 }

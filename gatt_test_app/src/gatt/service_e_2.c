@@ -6,11 +6,12 @@
 /**
  * @brief Service E
  *
- *  This code is auto-generated from the Excel Workbook 'GATT_Test_Databases.xlsm' Sheet: 'Large Database 2'
+ *  This code is auto-generated from the Excel Workbook
+ *  'GATT_Test_Databases.xlsm' Sheet: 'Large Database 2'
  */
 
-#include <misc/byteorder.h>
-#include <misc/printk.h>
+#include <sys/byteorder.h>
+#include <sys/printk.h>
 
 #include <bluetooth/gatt.h>
 
@@ -37,33 +38,38 @@ static u8_t   value_v13_value = 0x0D;
  * @param len    Length of data to read
  * @param offset Offset to start reading from
  *
- * @return       Number of bytes read, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes read, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t read_value_v13(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
+static ssize_t read_value_v13(struct bt_conn *conn,
+			      const struct bt_gatt_attr *attr,
+			      void *buf, u16_t len, u16_t offset)
 {
-    const u8_t *value = attr->user_data;
+	const u8_t *value = attr->user_data;
 
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value_v13_value));
+	return bt_gatt_attr_read(conn, attr, buf, len, offset, value,
+				 sizeof(value_v13_value));
 }
 
 #define BT_GATT_CHRC_NONE 0
 
 static struct bt_gatt_attr service_e_2_attrs[] = {
-    BT_GATT_PRIMARY_SERVICE(BT_UUID_SERVICE_E, 0xFFFD),
-    BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V13,
-        BT_GATT_CHRC_READ,
-        BT_GATT_PERM_READ,
-        read_value_v13, NULL, &value_v13_value, 0xFFFE)
+	BT_GATT_PRIMARY_SERVICE(BT_UUID_SERVICE_E, 0xFFFD),
+	BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V13,
+		BT_GATT_CHRC_READ,
+		BT_GATT_PERM_READ,
+		read_value_v13, NULL, &value_v13_value, 0xFFFE)
 };
 
-static struct bt_gatt_service service_e_2_svc = BT_GATT_SERVICE(service_e_2_attrs);
+static struct bt_gatt_service service_e_2_svc =
+			BT_GATT_SERVICE(service_e_2_attrs);
 
 /**
  * @brief Register the Service E and all its Characteristics...
  */
 void service_e_2_init(void)
 {
-    bt_gatt_service_register(&service_e_2_svc);
+	bt_gatt_service_register(&service_e_2_svc);
 }
 
 /**
@@ -71,5 +77,5 @@ void service_e_2_init(void)
  */
 void service_e_2_remove(void)
 {
-    bt_gatt_service_unregister(&service_e_2_svc);
+	bt_gatt_service_unregister(&service_e_2_svc);
 }

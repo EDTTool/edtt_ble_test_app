@@ -6,11 +6,12 @@
 /**
  * @brief Service A
  *
- *  This code is auto-generated from the Excel Workbook 'GATT_Test_Databases.xlsm' Sheet: 'Large Database 3'
+ *  This code is auto-generated from the Excel Workbook
+ *  'GATT_Test_Databases.xlsm' Sheet: 'Large Database 3'
  */
 
-#include <misc/byteorder.h>
-#include <misc/printk.h>
+#include <sys/byteorder.h>
+#include <sys/printk.h>
 
 #include <bluetooth/gatt.h>
 
@@ -40,9 +41,12 @@ extern struct bt_gatt_attr service_c_1_3_attrs[];
 #define BT_UUID_VALUE_V3                BT_UUID_DECLARE_16(0xb003)
 
 static u8_t   value_v1_value = 0x01;
-static u8_t   value_v2_value[] = { '1', '1', '1', '1', '1', '2', '2', '2', '2', '2', '3', '3', '3', '3', '3', '4', '4', 
-                                   '4', '4', '4', '5', '5', '5', '5', '5', '6', '6', '6', '6', '6', '7', '7', '7', '7', 
-                                   '7', '8', '8', '8', '8', '8', '9', '9', '9', '9', '9', '0', '0', '0', '0', '0', '\0' };
+static u8_t   value_v2_value[] = {
+	'1', '1', '1', '1', '1', '2', '2', '2', '2', '2', '3', '3', '3', '3',
+	'3', '4', '4', '4', '4', '4', '5', '5', '5', '5', '5', '6', '6', '6',
+	'6', '6', '7', '7', '7', '7', '7', '8', '8', '8', '8', '8', '9', '9',
+	'9', '9', '9', '0', '0', '0', '0', '0', '\0'
+};
 static u8_t   value_v3_value = 0x03;
 
 /**
@@ -54,13 +58,17 @@ static u8_t   value_v3_value = 0x03;
  * @param len    Length of data to read
  * @param offset Offset to start reading from
  *
- * @return       Number of bytes read, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes read, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t read_value_v1(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
+static ssize_t read_value_v1(struct bt_conn *conn,
+			    const struct bt_gatt_attr *attr, void *buf,
+			    u16_t len, u16_t offset)
 {
-    const u8_t *value = attr->user_data;
+	const u8_t *value = attr->user_data;
 
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value_v1_value));
+	return bt_gatt_attr_read(conn, attr, buf, len, offset, value,
+				 sizeof(value_v1_value));
 }
 
 /**
@@ -72,13 +80,17 @@ static ssize_t read_value_v1(struct bt_conn *conn, const struct bt_gatt_attr *at
  * @param len    Length of data to read
  * @param offset Offset to start reading from
  *
- * @return       Number of bytes read, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes read, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t read_str_value(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
+static ssize_t read_str_value(struct bt_conn *conn,
+			      const struct bt_gatt_attr *attr, void *buf,
+			      u16_t len, u16_t offset)
 {
-    const char *value = attr->user_data;
+	const char *value = attr->user_data;
 
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, strlen(value));
+	return bt_gatt_attr_read(conn, attr, buf, len, offset, value,
+				strlen(value));
 }
 
 /**
@@ -91,20 +103,23 @@ static ssize_t read_str_value(struct bt_conn *conn, const struct bt_gatt_attr *a
  * @param offset Offset to start writing from
  * @param flags  Flags (BT_GATT_WRITE_*)
  *
- * @return       Number of bytes written, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes written, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t write_value_v2(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf, u16_t len, u16_t offset, u8_t flags)
+static ssize_t write_value_v2(struct bt_conn *conn,
+			      const struct bt_gatt_attr *attr, const void *buf,
+			      u16_t len, u16_t offset, u8_t flags)
 {
-    char *value = attr->user_data;
+	char *value = attr->user_data;
 
-    if (offset >= sizeof(value_v2_value))
-        return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-    if (offset + len > sizeof(value_v2_value))
-        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+	if (offset >= sizeof(value_v2_value))
+		return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+	if (offset + len > sizeof(value_v2_value))
+		return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
 
-    memcpy(value + offset, buf, len);
+	memcpy(value + offset, buf, len);
 
-    return len;
+	return len;
 }
 
 /**
@@ -117,56 +132,60 @@ static ssize_t write_value_v2(struct bt_conn *conn, const struct bt_gatt_attr *a
  * @param offset Offset to start writing from
  * @param flags  Flags (BT_GATT_WRITE_*)
  *
- * @return       Number of bytes written, or in case of an error - BT_GATT_ERR() with a specific ATT error code.
+ * @return       Number of bytes written, or in case of an error -
+ *               BT_GATT_ERR() with a specific ATT error code.
  */
-static ssize_t write_value_v3(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf, u16_t len, u16_t offset, u8_t flags)
+static ssize_t write_value_v3(struct bt_conn *conn,
+			      const struct bt_gatt_attr *attr, const void *buf,
+			      u16_t len, u16_t offset, u8_t flags)
 {
-    u8_t *value = attr->user_data;
+	u8_t *value = attr->user_data;
 
-    if (offset >= sizeof(value_v3_value))
-        return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-    if (offset + len > sizeof(value_v3_value))
-        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+	if (offset >= sizeof(value_v3_value))
+		return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+	if (offset + len > sizeof(value_v3_value))
+		return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
 
-    memcpy(value + offset, buf, len);
+	memcpy(value + offset, buf, len);
 
-    return len;
+	return len;
 }
 
 #define BT_GATT_CHRC_NONE 0
 
 static struct bt_gatt_attr service_a_3_attrs[] = {
-    BT_GATT_PRIMARY_SERVICE(BT_UUID_SERVICE_A, 0x70),
-    BT_GATT_INCLUDE_SERVICE(service_d_3_attrs, 0x71),
-    BT_GATT_INCLUDE_SERVICE(service_c_1_3_attrs, 0x72),
-    BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V1,
-        BT_GATT_CHRC_READ,
-        BT_GATT_PERM_READ,
-        read_value_v1, NULL, &value_v1_value, 0x73),
-    BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V2,
-        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
-        BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-        read_str_value, write_value_v2, &value_v2_value, 0x75),
-    BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V3,
-        BT_GATT_CHRC_WRITE,
-        BT_GATT_PERM_WRITE,
-        NULL, write_value_v3, &value_v3_value, 0x77)
+	BT_GATT_PRIMARY_SERVICE(BT_UUID_SERVICE_A, 0x70),
+	BT_GATT_INCLUDE_SERVICE(service_d_3_attrs, 0x71),
+	BT_GATT_INCLUDE_SERVICE(service_c_1_3_attrs, 0x72),
+	BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V1,
+		BT_GATT_CHRC_READ,
+		BT_GATT_PERM_READ,
+		read_value_v1, NULL, &value_v1_value, 0x73),
+	BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V2,
+		BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+		BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
+		read_str_value, write_value_v2, &value_v2_value, 0x75),
+	BT_GATT_CHARACTERISTIC(BT_UUID_VALUE_V3,
+		BT_GATT_CHRC_WRITE,
+		BT_GATT_PERM_WRITE,
+		NULL, write_value_v3, &value_v3_value, 0x77)
 };
 
-static struct bt_gatt_service service_a_3_svc = BT_GATT_SERVICE(service_a_3_attrs);
+static struct bt_gatt_service service_a_3_svc =
+					BT_GATT_SERVICE(service_a_3_attrs);
 
 /**
- * @brief Register the Service A and all its Characteristics...
+ * @brief Register the Service A and all its Characteristics
  */
 void service_a_3_init(void)
 {
-    bt_gatt_service_register(&service_a_3_svc);
+	bt_gatt_service_register(&service_a_3_svc);
 }
 
 /**
- * @brief Un-Register the Service A and all its Characteristics...
+ * @brief Un-Register the Service A and all its Characteristics
  */
 void service_a_3_remove(void)
 {
-    bt_gatt_service_unregister(&service_a_3_svc);
+	bt_gatt_service_unregister(&service_a_3_svc);
 }

@@ -6,8 +6,11 @@
 /**
  * @brief GATT Macros
  *
- *  This code is auto-generated from the Excel Workbook 'GATT_Qualification_Test_Databases.xlsm' Sheet: 'Large Database 1'
- *  Feel free to change it - but be aware that your changes might be overwritten at the next generation...
+ *  This code is auto-generated from the Excel Workbook
+ *  'GATT_Qualification_Test_Databases.xlsm' Sheet: 'Large Database 1'
+ *
+ *  Feel free to change it - but be aware that your changes might be
+ *  overwritten at the next generation...
  */
 
 #ifndef GATT_MACS_H
@@ -33,19 +36,20 @@ extern "C" {
  */
 #undef  BT_GATT_ATTRIBUTE
 #define BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value, _handle) \
-{ \
-    .uuid = _uuid, \
-    .perm = _perm, \
-    .read = _read, \
-    .write = _write, \
-    .user_data = _value, \
-    .handle = _handle \
-}
+	{ \
+	.uuid = _uuid, \
+	.perm = _perm, \
+	.read = _read, \
+	.write = _write, \
+	.user_data = _value, \
+	.handle = _handle \
+	}
 
 /** @def BT_GATT_CHARACTERISTIC
  *  @brief Characteristic and Value Declaration Macro.
  *
- *  Helper macro to declare a characteristic attribute along with its attribute value.
+ *  Helper macro to declare a characteristic attribute along with its attribute
+ *  value.
  *
  *  @param _uuid   Characteristic attribute uuid.
  *  @param _props  Characteristic attribute properties.
@@ -56,17 +60,17 @@ extern "C" {
  *  @param _handle Characteristic attribute handle.
  */
 #undef  BT_GATT_CHARACTERISTIC
-#define BT_GATT_CHARACTERISTIC(_uuid, _props, _perm, _read, _write, _value, _handle) \
-    BT_GATT_ATTRIBUTE(BT_UUID_GATT_CHRC, \
-        BT_GATT_PERM_READ, \
-        bt_gatt_attr_read_chrc, \
-        NULL, \
-        (&(struct bt_gatt_chrc) { \
-            .uuid = _uuid, \
-            .properties = _props \
-        } ), \
-        _handle), \
-    BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value, _handle+1)
+#define BT_GATT_CHARACTERISTIC(_uuid, _props, _perm, _read, _write, _value,\
+			       _handle) \
+	BT_GATT_ATTRIBUTE(BT_UUID_GATT_CHRC, \
+			  BT_GATT_PERM_READ, \
+			  bt_gatt_attr_read_chrc, \
+			  NULL, \
+			  (&(struct bt_gatt_chrc) {.uuid = _uuid, \
+						   .properties = _props \
+						  }), \
+			  _handle), \
+	BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value, _handle + 1)
 
 /** @def BT_GATT_PRIMARY_SERVICE
  *  @brief Primary Service Declaration Macro.
@@ -78,12 +82,12 @@ extern "C" {
  */
 #undef  BT_GATT_PRIMARY_SERVICE
 #define BT_GATT_PRIMARY_SERVICE(_service, _handle) \
-    BT_GATT_ATTRIBUTE(BT_UUID_GATT_PRIMARY, \
-        BT_GATT_PERM_READ, \
-        bt_gatt_attr_read_service, \
-        NULL, \
-        _service, \
-        _handle)
+		BT_GATT_ATTRIBUTE(BT_UUID_GATT_PRIMARY, \
+				BT_GATT_PERM_READ, \
+				bt_gatt_attr_read_service, \
+				NULL, \
+				_service, \
+				_handle)
 
 /** @def BT_GATT_SECONDARY_SERVICE
  *  @brief Secondary Service Declaration Macro.
@@ -95,12 +99,12 @@ extern "C" {
  */
 #undef  BT_GATT_SECONDARY_SERVICE
 #define BT_GATT_SECONDARY_SERVICE(_service, _handle) \
-    BT_GATT_ATTRIBUTE(BT_UUID_GATT_SECONDARY, \
-        BT_GATT_PERM_READ, \
-        bt_gatt_attr_read_service, \
-        NULL, \
-        _service, \
-        _handle)
+		BT_GATT_ATTRIBUTE(BT_UUID_GATT_SECONDARY, \
+				BT_GATT_PERM_READ, \
+				bt_gatt_attr_read_service, \
+				NULL, \
+				_service, \
+				_handle)
 
 /** @def BT_GATT_INCLUDE_SERVICE
  *  @brief Include Service Declaration Macro.
@@ -112,12 +116,12 @@ extern "C" {
  */
 #undef  BT_GATT_INCLUDE_SERVICE
 #define BT_GATT_INCLUDE_SERVICE(_service_incl, _handle) \
-    BT_GATT_ATTRIBUTE(BT_UUID_GATT_INCLUDE, \
-        BT_GATT_PERM_READ, \
-        bt_gatt_attr_read_included, \
-        NULL, \
-        _service_incl, \
-        _handle)
+		BT_GATT_ATTRIBUTE(BT_UUID_GATT_INCLUDE, \
+				BT_GATT_PERM_READ, \
+				bt_gatt_attr_read_included, \
+				NULL, \
+				_service_incl, \
+				_handle)
 
 /** @def BT_GATT_DESCRIPTOR
  *  @brief Descriptor Declaration Macro.
@@ -133,7 +137,7 @@ extern "C" {
  */
 #undef  BT_GATT_DESCRIPTOR
 #define BT_GATT_DESCRIPTOR(_uuid, _perm, _read, _write, _value, _handle) \
-    BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value, _handle)
+		BT_GATT_ATTRIBUTE(_uuid, _perm, _read, _write, _value, _handle)
 
 /** @def BT_GATT_MANAGED
  *  @brief Managed Client Characteristic Configuration Declaration Macro.
@@ -143,10 +147,11 @@ extern "C" {
  *  @param _ccc    CCC attribute user data, shall point to a _bt_gatt_ccc.
  *  @param _perm   CCC access permissions.
  *  @param _handle Descriptor attribute handle.
- */ 
+ */
 #undef  BT_GATT_MANAGED
 #define BT_GATT_MANAGED(_ccc, _perm, _handle) \
-    BT_GATT_ATTRIBUTE(BT_UUID_GATT_CCC, _perm, bt_gatt_attr_read_ccc, bt_gatt_attr_write_ccc, _ccc, _handle)
+		BT_GATT_ATTRIBUTE(BT_UUID_GATT_CCC, _perm,\
+		bt_gatt_attr_read_ccc, bt_gatt_attr_write_ccc, _ccc, _handle)
 
 /** @def BT_GATT_CCC
  *  @brief Client Characteristic Configuration Change Declaration Macro.
@@ -158,18 +163,18 @@ extern "C" {
  *  @param _handle      Descriptor attribute handle.
  */
 /* #undef  BT_GATT_CCC
-   #define BT_GATT_CCC(_cfg, _cfg_changed, _handle) \
-      BT_GATT_DESCRIPTOR(BT_UUID_GATT_CCC, \
-          BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, \
-          bt_gatt_attr_read_ccc, \
-          bt_gatt_attr_write_ccc, \
-          (&(struct _bt_gatt_ccc) { \
-              .cfg = _cfg, \
-              .cfg_len = ARRAY_SIZE(_cfg), \
-              .cfg_changed = _cfg_changed \
-          } ), \
-          _handle)
-*/
+ *  #define BT_GATT_CCC(_cfg, _cfg_changed, _handle) \
+ *     BT_GATT_DESCRIPTOR(BT_UUID_GATT_CCC, \
+ *         BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, \
+ *         bt_gatt_attr_read_ccc, \
+ *         bt_gatt_attr_write_ccc, \
+ *         (&(struct _bt_gatt_ccc) { \
+ *             .cfg = _cfg, \
+ *             .cfg_len = ARRAY_SIZE(_cfg), \
+ *             .cfg_changed = _cfg_changed \
+ *         } ), \
+ *         _handle)
+ */
 /** @def BT_GATT_CCC
  *  @brief Client Characteristic Configuration Change Declaration Macro.
  *
@@ -181,8 +186,9 @@ extern "C" {
  */
 #undef  BT_GATT_CCC
 #define BT_GATT_CCC(_cfg, _cfg_changed, _handle) \
-    BT_GATT_MANAGED((&(struct _bt_gatt_ccc) \
-        BT_GATT_CCC_INITIALIZER(_cfg_changed, NULL, NULL)), BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, _handle)
+		BT_GATT_MANAGED((&(struct _bt_gatt_ccc) \
+			BT_GATT_CCC_INITIALIZER(_cfg_changed, NULL, NULL)),\
+			BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, _handle)
 
 /** @def BT_GATT_CEP
  *  @brief Characteristic Extended Properties Declaration Macro.
@@ -194,12 +200,12 @@ extern "C" {
  */
 #undef  BT_GATT_CEP
 #define BT_GATT_CEP(_value, _handle) \
-    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CEP, \
-        BT_GATT_PERM_READ, \
-        bt_gatt_attr_read_cep, \
-        NULL, \
-        (void *)_value, \
-        _handle)
+		BT_GATT_DESCRIPTOR(BT_UUID_GATT_CEP, \
+				BT_GATT_PERM_READ, \
+				bt_gatt_attr_read_cep, \
+				NULL, \
+				(void *)_value, \
+				_handle)
 
 /** @def BT_GATT_CUD
  *  @brief Characteristic User Format Descriptor Declaration Macro.
@@ -212,12 +218,12 @@ extern "C" {
  */
 #undef  BT_GATT_CUD
 #define BT_GATT_CUD(_value, _perm, _handle) \
-    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, \
-        _perm, \
-        bt_gatt_attr_read_cud, \
-        NULL, \
-        (void *)_value, \
-        _handle)
+		BT_GATT_DESCRIPTOR(BT_UUID_GATT_CUD, \
+				_perm, \
+				bt_gatt_attr_read_cud, \
+				NULL, \
+				(void *)_value, \
+				_handle)
 
 /** @def BT_GATT_CPF
  *  @brief Characteristic Presentation Format Descriptor Declaration Macro.
@@ -229,12 +235,12 @@ extern "C" {
  */
 #undef  BT_GATT_CPF
 #define BT_GATT_CPF(_value, _handle) \
-    BT_GATT_DESCRIPTOR(BT_UUID_GATT_CPF, \
-        BT_GATT_PERM_READ, \
-        bt_gatt_attr_read_cpf, \
-        NULL, \
-        (void *)_value, \
-        _handle)
+		BT_GATT_DESCRIPTOR(BT_UUID_GATT_CPF, \
+				BT_GATT_PERM_READ, \
+				bt_gatt_attr_read_cpf, \
+				NULL, \
+				(void *)_value, \
+				_handle)
 
 #ifdef __cplusplus
 }

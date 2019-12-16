@@ -6,11 +6,12 @@
 /**
  * @brief Service E
  *
- *  This code is auto-generated from the Excel Workbook 'GATT_Test_Databases.xlsm' Sheet: 'Large Database 3'
+ *  This code is auto-generated from the Excel Workbook
+ *  'GATT_Test_Databases.xlsm' Sheet: 'Large Database 3'
  */
 
-#include <misc/byteorder.h>
-#include <misc/printk.h>
+#include <sys/byteorder.h>
+#include <sys/printk.h>
 
 #include <bluetooth/gatt.h>
 
@@ -25,17 +26,18 @@
 #define BT_GATT_CHRC_NONE 0
 
 static struct bt_gatt_attr service_e_3_attrs[] = {
-    BT_GATT_PRIMARY_SERVICE(BT_UUID_SERVICE_E, 0xFFFF)
+	BT_GATT_PRIMARY_SERVICE(BT_UUID_SERVICE_E, 0xFFFF)
 };
 
-static struct bt_gatt_service service_e_3_svc = BT_GATT_SERVICE(service_e_3_attrs);
+static struct bt_gatt_service service_e_3_svc =
+			BT_GATT_SERVICE(service_e_3_attrs);
 
 /**
  * @brief Register the Service E and all its Characteristics...
  */
 void service_e_3_init(void)
 {
-    bt_gatt_service_register(&service_e_3_svc);
+	bt_gatt_service_register(&service_e_3_svc);
 }
 
 /**
@@ -43,5 +45,5 @@ void service_e_3_init(void)
  */
 void service_e_3_remove(void)
 {
-    bt_gatt_service_unregister(&service_e_3_svc);
+	bt_gatt_service_unregister(&service_e_3_svc);
 }

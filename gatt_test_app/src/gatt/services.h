@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2019 Oticon A/S
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #ifndef GATT_TEST_APP_GATT_SERVICES_H
 #define GATT_TEST_APP_GATT_SERVICES_H
 

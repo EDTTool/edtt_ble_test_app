@@ -6,7 +6,8 @@
 /**
  * @brief Service B.2
  *
- *  This code is auto-generated from the Excel Workbook 'GATT_Test_Databases.xlsm' Sheet: 'Large Database 2'
+ *  This code is auto-generated from the Excel Workbook
+ *  'GATT_Test_Databases.xlsm' Sheet: 'Large Database 2'
  */
 
 #ifndef SERVICE_B_2_2_H

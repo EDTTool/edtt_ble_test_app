@@ -8,8 +8,8 @@
 #include <stddef.h>
 #include <string.h>
 #include <errno.h>
-#include <misc/printk.h>
-#include <misc/byteorder.h>
+#include <sys/printk.h>
+#include <sys/byteorder.h>
 #include <zephyr.h>
 
 #include <settings/settings.h>
@@ -42,7 +42,7 @@ static const struct bt_data sd[] = {
 	BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
 };
 
-static int service_set = 0;
+static int service_set;
 
 static void connected(struct bt_conn *conn, u8_t err)
 {
@@ -51,9 +51,6 @@ static void connected(struct bt_conn *conn, u8_t err)
 	} else {
 		printk("Connected\n");
 	}
-    //	if (bt_conn_security(conn, BT_SECURITY_MEDIUM)) {
-    //		printk("Failed to set security\n");
-    //	}
 }
 
 static void disconnected(struct bt_conn *conn, u8_t reason)
@@ -61,7 +58,8 @@ static void disconnected(struct bt_conn *conn, u8_t reason)
 	printk("Disconnected (reason %u)\n", reason);
 }
 
-static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err)
+static void security_changed(struct bt_conn *conn, bt_security_t level,
+			     enum bt_security_err err)
 {
 	char addr[BT_ADDR_LE_STR_LEN];
 
@@ -79,112 +77,133 @@ static struct bt_conn_cb conn_callbacks = {
 static void service_setup(int set)
 {
 	if (set == service_set) {
-		printk("Ignored request to change GATT services set to #%d - already selected!\n", set);
+		printk("Ignored request to change GATT services set to #%d - "
+			"already selected!\n", set);
 		return;
 	}
 	switch (service_set) {
-		case 0:	break;
-		case 1:	service_c_2_1_remove();
-			service_f_1_remove();
-			service_c_1_1_remove();
-			service_b_5_1_remove();
-			service_b_2_1_remove();
-			service_b_1_1_remove();
-			service_b_3_1_remove();
-			service_b_4_1_remove();
-			service_a_1_remove();
-			service_d_1_remove();
-			break;
-		case 2:	service_e_2_remove();
-			service_b_5_2_remove();
-			service_b_2_2_remove();
-			service_b_3_2_remove();
-			service_a_2_remove();
-			service_b_1_2_remove();
-			service_d_2_remove();
-			service_b_4_2_remove();
-			service_c_1_2_remove();
-			service_c_2_2_remove();
-			break;
-		case 3:	service_e_3_remove();
-			service_c_2_3_remove();
-			service_b_2_3_remove();
-			service_c_1_3_remove();
-			service_a_3_remove();
-			service_b_3_3_remove();
-			service_b_4_3_remove();
-			service_b_5_3_remove();
-			service_d_3_remove();
-			service_b_1_3_remove();
-			break;
-		default: ;
+	case 0:
+		break;
+	case 1:
+		service_c_2_1_remove();
+		service_f_1_remove();
+		service_c_1_1_remove();
+		service_b_5_1_remove();
+		service_b_2_1_remove();
+		service_b_1_1_remove();
+		service_b_3_1_remove();
+		service_b_4_1_remove();
+		service_a_1_remove();
+		service_d_1_remove();
+		break;
+	case 2:
+		service_e_2_remove();
+		service_b_5_2_remove();
+		service_b_2_2_remove();
+		service_b_3_2_remove();
+		service_a_2_remove();
+		service_b_1_2_remove();
+		service_d_2_remove();
+		service_b_4_2_remove();
+		service_c_1_2_remove();
+		service_c_2_2_remove();
+		break;
+	case 3:
+		service_e_3_remove();
+		service_c_2_3_remove();
+		service_b_2_3_remove();
+		service_c_1_3_remove();
+		service_a_3_remove();
+		service_b_3_3_remove();
+		service_b_4_3_remove();
+		service_b_5_3_remove();
+		service_d_3_remove();
+		service_b_1_3_remove();
+		break;
+	default:
+		break;
 	}
 
 	switch (set) {
-		case 0:	break;
-		case 1:	service_d_1_init();
-			service_a_1_init();
-			service_b_4_1_init();
-			service_b_3_1_init();
-			service_b_1_1_init();
-			service_b_2_1_init();
-			service_b_5_1_init();
-			service_c_1_1_init();
-			service_f_1_init();
-			service_c_2_1_init();
-			break;
-		case 2:	service_c_2_2_init();
-			service_c_1_2_init();
-			service_b_4_2_init();
-			service_d_2_init();
-			service_b_1_2_init();
-			service_a_2_init();
-			service_b_3_2_init();
-			service_b_2_2_init();
-			service_b_5_2_init();
-			service_e_2_init();
-			break;
-		case 3:	service_b_1_3_init();
-			service_d_3_init();
-			service_b_5_3_init();
-			service_b_4_3_init();
-			service_b_3_3_init();
-			service_a_3_init();
-			service_c_1_3_init();
-			service_b_2_3_init();
-			service_c_2_3_init();
-			service_e_3_init();
-			break;
-		default: ;
+	case 0:
+		break;
+	case 1:
+		service_d_1_init();
+		service_a_1_init();
+		service_b_4_1_init();
+		service_b_3_1_init();
+		service_b_1_1_init();
+		service_b_2_1_init();
+		service_b_5_1_init();
+		service_c_1_1_init();
+		service_f_1_init();
+		service_c_2_1_init();
+		break;
+	case 2:
+		service_c_2_2_init();
+		service_c_1_2_init();
+		service_b_4_2_init();
+		service_d_2_init();
+		service_b_1_2_init();
+		service_a_2_init();
+		service_b_3_2_init();
+		service_b_2_2_init();
+		service_b_5_2_init();
+		service_e_2_init();
+		break;
+	case 3:
+		service_b_1_3_init();
+		service_d_3_init();
+		service_b_5_3_init();
+		service_b_4_3_init();
+		service_b_3_3_init();
+		service_a_3_init();
+		service_c_1_3_init();
+		service_b_2_3_init();
+		service_c_2_3_init();
+		service_e_3_init();
+		break;
+	default:
+		break;
 	}
 	service_set = set;
 	printk("Switched to GATT services set to #%d\n", set);
 }
 
-static void service_notify()
+static void service_notify(void)
 {
 	switch (service_set) {
-		case 0:	break;
-		case 1:	service_b_3_1_value_v6_notify();
-			break;
-		case 2:	service_b_3_2_value_v6_notify();
-			break;
-		case 3:	service_b_3_3_value_v6_notify();
-			break;
-		default: ;
+	case 0:
+		break;
+	case 1:
+		service_b_3_1_value_v6_notify();
+		break;
+	case 2:
+		service_b_3_2_value_v6_notify();
+		break;
+	case 3:
+		service_b_3_3_value_v6_notify();
+		break;
+	default:
+		break;
 	}
 }
 
-static void service_indicate()
+static void service_indicate(void)
 {
 	switch (service_set) {
-		case 0:	break;
-		case 1:	break;
-		case 2:	service_b_3_2_value_v6_indicate();
-			break;
-		case 3:	service_b_3_3_value_v6_indicate();
-			break;
-		default: ;
+	case 0:
+		break;
+	case 1:
+		break;
+	case 2:
+		service_b_3_2_value_v6_indicate();
+		break;
+	case 3:
+		service_b_3_3_value_v6_indicate();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -205,7 +224,9 @@ static void bt_ready(int err)
 		settings_load();
 	}
 
-	if ((err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd)))) {
+	err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad), sd,
+			      ARRAY_SIZE(sd));
+	if (err) {
 		printk("Advertising failed to start (err %d)\n", err);
 		return;
 	}
@@ -232,13 +253,13 @@ static void auth_cancel(struct bt_conn *conn)
 }
 
 static struct bt_conn_auth_cb auth_cb_display = {
-		.passkey_display = auth_passkey_display,
-		.passkey_entry = NULL,
-		.cancel = auth_cancel,
+	.passkey_display = auth_passkey_display,
+	.passkey_entry = NULL,
+	.cancel = auth_cancel,
 };
 
 /**
- * @brief Clean out excess bytes from the input buffer...
+ * @brief Clean out excess bytes from the input buffer
  */
 static void read_excess_bytes(u16_t size)
 {
@@ -251,7 +272,7 @@ static void read_excess_bytes(u16_t size)
 }
 
 /**
- * @brief Switch GATT Service Set...
+ * @brief Switch GATT Service Set
  */
 static void switch_service_set(u16_t size)
 {
@@ -271,7 +292,7 @@ static void switch_service_set(u16_t size)
 }
 
 /**
- * @brief Send Notifications from GATT Service Set...
+ * @brief Send Notifications from GATT Service Set
  */
 static void handle_service_notify(u16_t size)
 {
@@ -286,7 +307,7 @@ static void handle_service_notify(u16_t size)
 }
 
 /**
- * @brief Send Indications from GATT Service Set...
+ * @brief Send Indications from GATT Service Set
  */
 static void handle_service_indicate(u16_t size)
 {
@@ -306,7 +327,8 @@ void main(void)
 	u16_t command;
 	u16_t size;
 
-	if ((err = bt_enable(bt_ready))) {
+	err = bt_enable(bt_ready);
+	if (err) {
 		printk("Bluetooth init failed (err %d)\n", err);
 		return;
 	}
@@ -315,7 +337,7 @@ void main(void)
 	bt_conn_auth_cb_register(&auth_cb_display);
 
 	/**
-	 * Initialize and start EDTT system...
+	 * Initialize and start EDTT system
 	 */
 #if defined(CONFIG_ARCH_POSIX)
 	enable_edtt_mode();
@@ -328,7 +350,7 @@ void main(void)
 	 */
 	while (1) {
 		/**
-		 * Wait for a command to arrive - then read and execute command...
+		 * Wait for a command to arrive - then read and execute command
 		 */
 		edtt_read((u8_t *)&command, sizeof(command), EDTTT_BLOCK);
 		command = sys_le16_to_cpu(command);
@@ -338,17 +360,17 @@ void main(void)
 				command, size);
 
 		switch (command) {
-			case CMD_GATT_SERVICE_SET_REQ:
-				switch_service_set(size);
-				break;
-			case CMD_GATT_SERVICE_NOTIFY_REQ:
-				handle_service_notify(size);
-				break;
-			case CMD_GATT_SERVICE_INDICATE_REQ:
-				handle_service_indicate(size);
-				break;
-			default:
-				;
+		case CMD_GATT_SERVICE_SET_REQ:
+			switch_service_set(size);
+			break;
+		case CMD_GATT_SERVICE_NOTIFY_REQ:
+			handle_service_notify(size);
+			break;
+		case CMD_GATT_SERVICE_INDICATE_REQ:
+			handle_service_indicate(size);
+			break;
+		default:
+			break;
 		}
 	}
 }
